@@ -1,0 +1,34 @@
+﻿@model PhoneStore_MVC.Models.tNhanVien
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["Message"] != null && !string.IsNullOrWhiteSpace(TempData["Message"].ToString()))
+{
+    <div class="alert alert-danger" role="alert" id="mes" name="mes">
+        @TempData["Message"].ToString()
+    </div>
+    <script type="text/javascript">
+        setTimeout(function () { $('#mes').fadeOut("slow"); }, 3000)
+    </script>
+}
+
+<hr />
+<div class="row">
+    <div class="container col-md-offset-4">
+        <h2 class="">Đăng nhập</h2>
+        @using (Html.BeginForm("Login", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <h4>Tên đăng nhập</h4>
+            @Html.TextBoxFor(a => a.TenDangNhap, null, new { @class = "form-control" })
+
+            <h4>Mật khẩu</h4>
+            @Html.PasswordFor(a => a.MatKhau, new { @class = "form-control" })
+            <br />
+            <input type="submit" value="Đăng nhập" class="btn btn-primary" />
+        }
+    </div>
+</div>

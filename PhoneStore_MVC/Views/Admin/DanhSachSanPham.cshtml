@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "DanhSachSanPham";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+
+    img{
+        width:40px;
+        height:40px;
+        display:inline-block;
+    }
+</style>
+<h2>Danh sách sản phẩm</h2>
+<a href="@Url.Action("ThemSanPham","Admin")" class="btn btn-primary">Thêm sản phẩm</a>
+<br /><br />
+<div id="thongbao">
+
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã điện thoại</th>
+            <th>Tên điện thoại</th>
+            <th>Nhà sản xuất</th>
+            <th>Ảnh</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+
+    @section scripts{
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+                let result;
+                window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+                const voice = new SpeechRecognition()
+                $('h2').append('<a style="margin-left: 10px;cursor: pointer" class="mics"><i class="fas fa-microphone"></i></a>')
+                voice.lang = 'vi-VI'
+                voice.interimResults = true
+                voice.continuous = false;
+
+                $('.mics').click(function () {
+                    voice.start()
+                    console.log('hello')
+
+                })
+                voice.addEventListener('result', function (e) {
+                    console.log(e)
+                    result = e.results[0][0].transcript
+                })
+
+                voice.addEventListener('end', function (e) {
+                    console.log(result);
+                    $('input[type="search"]').val(result.toLowerCase())
+                    $('table').DataTable().search($('input[type="search"]').val()).draw()
+                })
+
+
+
+                voice.onerr = function (event) {
+                    console.log(event)
+                }
+            })
+
+            function LoadDuLieu() {
+                $.getJSON('/api/LayDanhSachSanPham', function (data) {
+                    console.log(data);
+                    var htmldata = '';
+                    $(data).each(function (k, v) {
+                        var anh = '';
+                        $(v.Anh).each(function (a, b) {
+                            anh += '<img src="/PhoneImages/' + b + '">'
+                        })
+                        htmldata += '<tr><td>' + v.MaDT + '</td><td>' + v.TenDT + '</td><td>' + v.MaNSX + '</td><td>'+anh+'</td><td>'+v.TrangThai+'</td><td><a href="#" class="btn btn-danger" style= "margin-left:10px;" onclick="return DeleteProduct(\'' + v.MaDT + '\',this);">Xóa</a></td></tr>';
+                    })
+                    $('table tbody').html(htmldata);
+                    $('table').dataTable({
+                        dom: 'Bfrtip',
+                        "pageLength": 5,
+
+                    });
+                });
+            }
+
+            LoadDuLieu();
+
+            function DeleteProduct(id, ctl) {
+                var result = confirm("Bạn có chắc là muốn xóa sản phẩm này?");
+                if (result) {
+                    $.ajax({
+                        url: '/api/SanPhamAPI/DeleteProduct?id=' + id,
+                        type: 'PUT',
+                        success: function (result) {
+                            $(ctl).parent().parent().children('td:nth-child(5)').text('Ngừng kinh doanh');
+                            thongbao(result, true);
+                        }
+                    }).fail(function (data) {
+                        alert('Xóa sản phẩm không thành công');
+                    });
+                }
+                return false;
+            }
+            var old_name = '';
+            var old_phone = '';
+            function EditAccount(id, ctl) {
+
+                if ($(ctl).text() == 'Sửa') {
+                    $(ctl).text('Lưu');
+                    old_name = $(ctl).parent().parent().children('td:nth-child(2)').text();
+                    old_phone = $(ctl).parent().parent().children('td:nth-child(3)').text();
+                    console.log('tencu: ' + old_name + 'sdtcu:' + old_phone)
+                    for (var i = 0; i < 2; i++) {
+                        var val = $(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').text();
+                        $(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').html('<input type="text" value="' + val + '" />');
+                    }
+                } else {
+                    //console.log('tencu: ' + old_name + 'sdtcu:' + old_phone);
+
+                    var hoten = '', dienthoai = '', tentk;
+                    hoten == old_name ? hoten : $(ctl).parent().parent().children('td:nth-child(2)').children('input').val();
+                    dienthoai == old_phone ? dienthoai : $(ctl).parent().parent().children('td:nth-child(2)').children('input').val();
+                    tentk = id;
+                    console.log('tentk: ' + tentk + ' hoten: ' + hoten + ' dienthoai: ' + dienthoai);
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/api/EditAccount?tentk=' + id + '&hoten=' + hoten + '&dienthoai=' + dienthoai,
+                        success: function (result) {
+                            console.log(result);
+                            thongbao(result, true);
+                            console.log("Edit success");
+                        },
+                    }).done(function () {
+                        console.log('Edit done');
+                    }).fail(function (msg) {
+                        thongbao('Edit Fail', false);
+                        console.log('Edit FAIL');
+                    });
+
+                    for (var i = 0; i < 2; i++) {
+                        $(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').text($(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').children('input').val());
+                    }
+                    $(ctl).text('Sửa');
+                }
+            }
+
+            function thongbao(txt, status) {
+                $('#thongbao').hide();
+                if (status == true) {
+                    $('#thongbao').html('<div class="alert alert-success">' + txt + '</div>');
+                } else {
+                    $('#thongbao').html('<div class="alert alert-danger">' + txt + '</div>');
+                }
+                $('#thongbao').fadeIn();
+                setTimeout(function () { $('#thongbao div').fadeOut("slow"); }, 3000);
+            }
+        </script>
+
+
+    }
+

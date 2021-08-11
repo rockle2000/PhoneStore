@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "DoiMatKhauAdmin";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div id="thongbao">
+
+</div>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h2 class="">Đổi mật khẩu</h2>
+        <h4>Tên đăng nhập</h4>
+        <input type="text" class="form-control" id="txtTenDangNhap" readonly value="@ViewBag.TenTK" />
+        <br />
+        <h4>Mật khẩu cũ</h4>
+        <input type="password" class="form-control" id="txtOldPass" />
+        <br />
+        <h4>Mật khẩu mới</h4>
+        <input type="password" class="form-control" id="txtNewPass" />
+        <br />
+        <button id="btnConfirm" class="btn btn-primary">Xác nhận</button>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $('#btnConfirm').click(function () {
+            if ($('#txtTenDangNhap').val() && $('#txtOldPass').val() && $('#txtNewPass').val()) {
+                //console.log($('#username').val(), $('#current_password').val(), $('#newPassword').val(), $('#confirmPassword').val())
+                var username = $('#txtTenDangNhap').val();
+                var old_pass = $('#txtOldPass').val();
+                var new_pass = $('#txtNewPass').val();
+                $.ajax({
+                    url: "/api/ChangePasswordAdmin?tentk=" + username + "&oldPass=" + old_pass + "&newPass=" + new_pass,
+                    type: 'PUT',
+                    success: function (result) {
+                        thongbao(result, true);
+                        $('#txtOldPass').val('');
+                        $('#txtNewPass').val('');
+                    }
+                }).fail(function (result) {
+                    thongbao(result.responseJSON.Message, false);
+                })
+            } else {
+                alert("These field can not be null");
+            }
+        })
+        function thongbao(txt, status) {
+            $('#thongbao').hide();
+            if (status == true) {
+                $('#thongbao').html('<div class="alert alert-success">' + txt + '</div>');
+            } else {
+                $('#thongbao').html('<div class="alert alert-danger">' + txt + '</div>');
+            }
+            $('#thongbao').fadeIn();
+            setTimeout(function () { $('#thongbao div').fadeOut("slow"); }, 3000);
+        }
+
+
+
+    </script>
+
+}
+

@@ -1,0 +1,283 @@
+﻿
+@{
+    ViewBag.Title = "TimKiem";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<!-- shop-list-right-sidebar31:48-->
+<head>
+
+</head>
+<body>
+    <div class="body-wrapper">
+        <!-- Begin Li's Content Wraper Area -->
+        <div class="content-wraper pb-60">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 order-2 order-lg-1">
+                        <!-- Begin Li's Banner Area -->
+                        <!-- Li's Banner Area End Here -->
+                        <!-- shop-top-bar start -->
+                        <div class="shop-top-bar mt-30">
+                            <div class="shop-bar-inner">
+                                <div class="product-view-mode">
+                                    <!-- shop-item-filter-list start -->
+                                    <ul class="nav shop-item-filter-list" role="tablist">
+                                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="grid-view" href="#grid-view"><i class="fa fa-th"></i></a></li>
+                                        <li class="active" role="presentation"><a aria-selected="true" class="active show" data-toggle="tab" role="tab" aria-controls="list-view" href="#list-view"><i class="fa fa-th-list"></i></a></li>
+                                    </ul>
+                                    <!-- shop-item-filter-list end -->
+                                </div>
+                                <div class="toolbar-amount">
+                                    <span>Kết quả tìm kiếm với <strong>@ViewBag.TenSP</strong></span>
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <!-- shop-top-bar end -->
+                        <!-- shop-products-wrapper start -->
+                        <div class="shop-products-wrapper">
+                            <div class="tab-content">
+                                <div id="list-view" class="tab-pane fade product-list-view active show" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col" id="noidung">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- shop-products-wrapper end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Body Wrapper End Here -->
+</body>
+
+<!-- shop-list-right-sidebar31:48-->
+</html>
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+        var key = "@ViewBag.TenSP";
+        if ( key == '' || key == null) {
+            html = '<h4>Không tìm thấy sản phẩm nào</h4>';
+            $('#noidung').html(html);
+        }
+
+        var Cart = [];
+        if (sessionStorage.getItem('giohang') === null) {
+            //dulieu = sessionStorage.getItem('giohang');
+        } else {
+            Cart = JSON.parse(sessionStorage.getItem('giohang'));
+        }
+        function AddCart(masp, tensp, anh, gia, mau, ctl) {
+            var sp = 0;
+            if (sessionStorage.getItem("sosp") !== null) {
+                sp = parseInt(sessionStorage.getItem("sosp"));
+            }
+            alert('added');
+            console.log(masp, tensp, anh, gia, mau, ctl);
+            var i = 0;
+            for (; i < Cart.length; i++) {
+                if (Cart[i].MaSP == masp && Cart[i].Mau == mau) {
+                    Cart[i].Quantity += 1;
+                    sp += 1;
+                    sessionStorage.setItem("sosp", sp);
+                    UpdateCartCount();
+                    break;
+                }
+            }
+            // Neu i == cart.length -> vong for tren chua duoc break hoac khong thay phan tu nao thoa man dieu kien
+            if (Cart && (Cart.length == 0 || i == Cart.length)) {
+                Cart.push({ MaSP: masp, TenSP: tensp, Anh: anh, Gia: Math.floor(gia), Mau: mau, Quantity: 1 });
+                sp += 1;
+                sessionStorage.setItem("sosp", sp);
+                UpdateCartCount();
+            }
+            console.log('Cart:' + JSON.stringify(Cart));
+            if (sessionStorage) {
+                sessionStorage.setItem('giohang', JSON.stringify(Cart));
+                DisplayMiniCart(true);
+            }
+            return false;
+        }
+        html = "";
+        var ROOT = '@Url.Content("~/PhoneImages/")';
+        var nsx = '@ViewBag.NSX';
+        if (key) {
+            $.get('/api/SearchProduct?name=' + key + '&nsx=' + nsx, function (data) {
+                console.log(data);
+                if (data.length == 0 || key == '' || key == null) {
+                    console.log('khong thấy');
+                    html = '<h4>Không tìm thấy sản phẩm nào</h4>';
+                } else {
+                    $(data).each(function (k, v) {
+                        var anh = v.Anh[0];
+                        var link = '@Url.Action("ChiTietSanPham", "Home", new { id = "-1" })';
+                        link = link.replace("-1", v.MaDT);
+                        html += '<div class="row product-layout-list" id="noidung">' +
+                            '<div class="col-lg-3 col-md-5 ">' +
+                            '<div class="product-image" >' +
+                            '<a href="'+link+'"><img style="width:200px; heigth:200px" src="' + ROOT + anh + '" alt=""></a>' +
+                            '</div >' +
+                            '</div >' +
+                            '<div class="col-lg-5 col-md-7">' +
+                            '<div class="product_desc">' +
+                            '<div class="product_desc_info">' +
+                            '<div class="product-review">' +
+                            '<h5 class="manufacturer">' +
+                            '<a href="product-details.html">' + v.MaNSX + '</a>' +
+                            '</h5>' +
+                            '<div class="rating-box">' +
+                            '<ul class="rating">' +
+                            '<li><i class="fa fa-star-o"></i></li><li><i class="fa fa-star-o"></i></li><li><i class="fa fa-star-o"></i></li><li class="no-star"><i class="fa fa-star-o"></i></li><li class="no-star"><i class="fa fa-star-o"></i></li>' +
+                            '</ul>' +
+                            '</div>' +
+                            '</div>' +
+                            '<h4><a class="product_name" href="">' + v.TenDT + '</a></h4>' +
+                            '<div class="price-box">' +
+                            '<span class="new-price">' + v.Gia[0] + '</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="col-lg-4">' +
+                            '<div class="shop-add-action mb-xs-30">' +
+                            '<ul class="add-actions-link">' +
+                            '<li class="add-cart active"><a href="#" onclick="return AddCart(\'' + v.MaDT + '\',\'' + v.TenDT + '\',\'' + v.Anh[0] + '\',\'' + v.Gia[0] + '\',\'' + v.Mau[0] + '\',this);">Add to cart</a></li><li class="wishlist"><a href=""><i class="fas fa-heart" aria-hidden="true"></i>Add to wishlist</a></li>' +
+                            '</ul>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div >';
+                    })
+                }
+                $('#noidung').html(html);
+            })
+        }
+
+        //function Test(ctl) {
+        //    var sp = 0;
+        //    if (sessionStorage.getItem("sosp") !== null) {
+        //        sp = parseInt(sessionStorage.getItem("sosp"));
+        //    }
+        //    var soluong = $(ctl).parent().children().children().children("input[type=text]").val();
+        //    var tensp = $('.modal-body #product_name').text();
+        //    var masp = $('.modal-body #product_code').text();
+        //    var mau = $('.modal-body #product_color').val();
+        //    var gia = $('.modal-body #product_price').text();
+        //    var anh = $('.modal-body #product_first_img').text();
+
+        //    console.log("ten:" + tensp + " ma: " + masp + " mau: " + mau + " gia: " + gia + " soluong: " + soluong + " anh: " + anh);
+
+        //    var i = 0;
+        //    for (; i < Cart.length; i++) {
+        //        if (Cart[i].MaSP == masp && Cart[i].Mau == mau) {
+        //            Cart[i].Quantity += parseInt(soluong);
+        //            sp += parseInt(soluong);
+        //            sessionStorage.setItem("sosp", sp);
+        //            UpdateCartCount();
+        //            break;
+        //        }
+        //    }
+        //    // Neu i == cart.length -> vong for tren chua duoc break hoac khong thay phan tu nao thoa man dieu kien
+        //    if (Cart && (Cart.length == 0 || i == Cart.length)) {
+        //        Cart.push({ MaSP: masp, TenSP: tensp, Anh: anh, Gia: gia, Mau: mau, Quantity: parseInt(soluong) });
+        //        sp += parseInt(soluong);
+        //        sessionStorage.setItem("sosp", sp);
+        //        UpdateCartCount();
+        //    }
+        //    console.log('Cart:' + JSON.stringify(Cart));
+        //    if (sessionStorage) {
+        //        sessionStorage.setItem('giohang', JSON.stringify(Cart));
+        //        DisplayMiniCart(true);
+        //    }
+        //    $('.modal').modal('toggle');
+        //    return false;
+        //}
+
+        //function Detail(id, ctl) {
+        //    console.log(id);
+        //    $.getJSON('/api/SanPhamAPI/ChiTietSanPham?id=' + id, function (data) {
+        //        console.log(data);
+        //        console.log(data.TenDT);
+        //        $('.modal-body #product_code').html(data.MaDT);
+        //        $('.modal-body #product_name').html(data.TenDT);
+        //        $('.modal-body #product_brand').html(data.MaNSX);
+        //        $('.modal-body #product_price').html(data.Gia[0]);
+
+        //        console.log(data.Anh.length);
+        //        var lg_img = '';
+        //        var sm_img = '';
+        //        var color = '';
+        //        $('.modal-body #product_first_img').text(data.Anh[0]);
+        //        for (var i = 0; i < data.Anh.length; i++) {
+        //            lg_img += '<div class="lg-image"><img src="/PhoneImages/' + data.Anh[i] + '" alt="product image"></div>';
+        //            sm_img += '<div class="sm-image"><img src="/PhoneImages/' + data.Anh[i] + '" alt="product image"></div>';
+
+        //        }
+        //        $('.slider-navigation-1').slick('removeSlide', null, null, true);
+        //        $('.slider-thumbs-1').slick('removeSlide', null, null, true);
+        //        $('.modal-body .product-details-images').html(lg_img);
+        //        $('.slider-navigation-1')[0].slick.refresh();
+        //        $('.modal-body .product-details-thumbs').html(sm_img);
+        //        $('.slider-thumbs-1')[0].slick.refresh();
+
+        //        //Màu sản phẩm
+        //        $('#product_color').html('');
+        //        for (var i = 0; i < data.Mau.length; i++) {
+        //            //console.log('Màu '+i+data.Mau[i]);
+        //            color += '<option value ="' + data.Mau[i] + '">' + data.Mau[i] + '</option>';
+        //        }
+        //        $('#product_color').html(color);
+
+        //        //Đổi giá tiền theo màu
+        //        $('#product_color').on('change', function () {
+        //            //alert(this.value);
+        //            $.getJSON('/api/SanPhamAPI/GetProductPrice?id=' + id + '&color=' + this.value, function (data) {
+        //                //alert(data);
+        //                $('.modal-body #product_price').html(data);
+        //            });
+        //        });
+
+        //        //Thông số sản phẩm
+        //        var thongso = '<tr>' +
+        //            '<td style = "background-color:lightgray; width:100px" >Chip</td >' +
+        //            '<td>' + data.Chip + '</td>' +
+        //            '</tr>' +
+        //            '<tr>' +
+        //            '<td style="background-color:lightgray">Ram</td>' +
+        //            '<td>' + data.Ram + '</td>' +
+        //            '</tr>' +
+        //            '<tr>' +
+        //            '<td style="background-color:lightgray">Memory</td>' +
+        //            '<td>' + data.BoNhoTrong + '</td>' +
+        //            '</tr>' +
+        //            '<tr> ' +
+        //            '<td style = "background-color:lightgray" > Battery</td > ' +
+        //            '<td>' + data.Pin + '</td > ' +
+        //            '</tr>' +
+        //            '<tr> ' +
+        //            '<td style = "background-color:lightgray" > OS</td > ' +
+        //            '<td>' + data.HeDieuHanh + '</td > ' +
+        //            '</tr>' +
+        //            '<tr>' +
+        //            '<td style = "background-color:lightgray" > Size</td > ' +
+        //            '<td>' + data.KichThuoc + '</td > ' +
+        //            '</tr>';
+        //        $('#product_details tbody').html(thongso);
+        //    });
+        //}
+
+    </script>
+
+}
+

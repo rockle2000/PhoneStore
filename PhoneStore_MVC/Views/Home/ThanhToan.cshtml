@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewBag.Title = "ThanhToan";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+<style>
+    table img {
+        width: 100px;
+        height: 100px
+    }
+</style>
+<!-- Begin Li's Breadcrumb Area -->
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <ul>
+                <li><a href="@Url.Action("TrangChu","Home")">Home</a></li>
+                <li class="active">Checkout</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Li's Breadcrumb Area End Here -->
+<!--Shopping Cart Area Strat-->
+<div class="Shopping-cart-area pt-60 pb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <!--Thông tin giao hàng-->
+                <div class="login-form">
+                    <h4 class="login-title">Delivery Informaition</h4>
+                    <div class="row">
+                        <div class="col-md-12 col-12 mb-20">
+                            <label>Address*</label>
+                            @*<input id="txtAddress" class="mb-0" type="text" placeholder="Address..." required oninvalid="this.setCustomValidity('Enter Address Here')" oninput="this.setCustomValidity('')">*@
+
+                            <textarea id="txtAddress" class="mb-0" placeholder="Address..." required oninvalid="this.setCustomValidity('Enter Address Here')" oninput="this.setCustomValidity('')"></textarea>
+                        </div>
+                        <div class="col-12 mb-20">
+                            <label>PhoneNumber*</label>
+                            <input id="txtPhoneNumber" class="mb-0" type="text" placeholder="PhoneNumber..." required oninvalid="this.setCustomValidity('Enter PhoneNumber Here')" oninput="this.setCustomValidity('')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Các sản phẩm đã mua-->
+            <div class="col-md-8">
+                <form action="#">
+                    <div class="table-content table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="li-product-thumbnail">Images</th>
+                                    <th class="cart-product-name">Product Code</th>
+                                    <th class="cart-product-name">Product</th>
+                                    <th class="cart-product-name">Color</th>
+                                    <th class="li-product-price">Unit Price</th>
+                                    <th class="li-product-quantity">Quantity</th>
+                                    <th class="li-product-subtotal">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="coupon-all">
+                                <div class="coupon">
+                                    <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Coupon code" type="text">
+                                    <input class="button" name="apply_coupon" value="Apply coupon" type="submit">
+                                </div>
+                                <div class="coupon2">
+                                    @*<div class="cart-page-total">
+                                        <h2>Cart totals</h2>
+                                        <ul>
+                                            <li>Subtotal <span class="sub_total"></span></li>
+                                            <li>Total <span class="total"></span></li>
+                                        </ul>
+                                        <a href="#" id="btn_checkout">Complete checkout</a>
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cart-page-total">
+                                <h2>Cart totals</h2>
+                                <ul>
+                                    <li>Subtotal <span class="sub_total"></span></li>
+                                    <li>Total <span class="total"></span></li>
+                                </ul>
+                                <a href="#" id="btn_checkout">Complete checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 ml-auto">
+                            @*<div class="cart-page-total">
+                            <h2>Cart totals</h2>
+                            <ul>
+                                <li>Subtotal <span class="sub_total"></span></li>
+                                <li>Total <span class="total"></span></li>
+                            </ul>
+                            <a href="#" id="btn_checkout">Complete checkout</a>
+                        </div>*@
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        console.log('Username: '+username);
+       
+        var Cart = [];
+        var tongtien = 0;
+        if (sessionStorage) {
+            var dulieu = sessionStorage.getItem("giohang");
+            console.log('du lieu: ' + dulieu);
+            if (dulieu) {
+                var Cart = JSON.parse(dulieu);
+                console.log(Cart);
+                if (Cart) $(Cart).each(function (k, v) {
+                    $('table tbody').append('<tr>' +
+                        '<td class="li-product-thumbnail"><img src="/PhoneImages/' + v.Anh + '"/></td>' +
+                        '<td class="li-product-name"><a href="#">' + v.MaSP + '</a></td>' +
+                        '<td class="li-product-name"><a href="#">' + v.TenSP + '</a></td>' +
+                        '<td class="li-product-name"><a href="#">' + v.Mau + '</a></td>' +
+                        '<td class="li-product-price"><span class="amount gia">' + v.Gia + '</span></td>' +
+                        '<td class="quantity">' +
+                        '<span class="amount">' + v.Quantity + '</span>' +
+                        '</td>' +
+                        '<td class="product-subtotal"><span class="amount thanhtien">' + v.Quantity * v.Gia+'</span></td>' +
+                        '</tr>');
+                    tongtien += v.Quantity * v.Gia;
+                });
+                $('.sub_total').text('$' + tongtien);
+                $('.total').text('$' + tongtien);
+            }
+        }
+        var username = '@Request.RequestContext.HttpContext.Session["UserName"]';
+        ////Thanh toán
+        $('#btn_checkout').click(function () {
+            if ($('table tbody tr').length == 0) {
+                alert("Bạn chưa thêm sản phẩm nào vào giỏ hàng");
+                return;
+            }
+            if (!username || username===""||username==null) {
+                console.log('username:'+username);
+                window.location.href = "/Home/Login";
+            }
+            if (!$('#txtAddress').val() || !$('#txtPhoneNumber').val()) {
+                alert("Bạn chưa nhập đủ thông tin giao hàng");
+                return;
+            } else {
+                var diachi = $('#txtAddress').val();
+                var sodienthoai = $('#txtPhoneNumber').val();
+                //var makm = $('.coupon_code').val() != null ? $('.coupon_code').val() : 'NULL';
+                //console.log('makm:' + makm);
+                var Carts = [];
+                var flag = true;
+                for (var i = 0; i < Cart.length; i++) {
+                    $.ajax({
+                        url: '/api/SanPhamAPI/GetProductPrice?id=' + Cart[i].MaSP + '&color=' + Cart[i].Mau,
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            console.log(data[0].SoLuong);
+                            console.log(Cart[i].Quantity);
+                            if (Cart[i].Quantity > data[0].SoLuong) {
+                                alert("Sản phẩm" + Cart[i].MaSP + " màu: " + Cart[i].Mau + " chỉ còn " + data[0].SoLuong + " sản phẩm");
+                                flag = false;
+                            } else {
+                                Carts.push({ MaDT: Cart[i].MaSP, Mau: Cart[i].Mau, SoLuong: Cart[i].Quantity, DonGiaBan: Cart[i].Gia });
+                            }
+                        }
+                    });
+                    if (!flag) break;
+                }
+                if (flag) {
+                    console.log('Cart: ' + JSON.stringify(Carts));
+                    var bill = { EmailKH: username, TongTien: tongtien, DiaChi: diachi, SoDienThoai: sodienthoai, TrangThai: 'Pending', tChiTietHDBs: Carts };
+                    console.log('Bill: ' + JSON.stringify(bill));
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/ThanhToan",
+                        data: JSON.stringify(bill),
+                        //sending type
+                        contentType: "application/json; charset=utf-8",
+                        //expecting type
+                        dataType: "json",
+                        success: function (response) {
+                            console.log('success' + response);
+                            alert(response);
+                            clear = [];
+                            sessionStorage.setItem("giohang", JSON.stringify(clear));
+                            sessionStorage.setItem("sosp", 0);
+                            window.location.href = "/Home/TrangChu";
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            console.log(xhr.status);
+                            console.log(thrownError);
+                            console.warn(xhr.responseText)
+                        }
+                    });
+                }
+            }
+        });
+
+
+    </script>
+
+
+}
+

@@ -1,0 +1,89 @@
+﻿@model PhoneStore_MVC.Models.tNhanVien
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+<!-- Header Area End Here -->
+<!-- Begin Li's Breadcrumb Area -->
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <ul>
+                <li><a href="@Url.Action("TrangChu","Home")">Home</a></li>
+                <li class="active">Login </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Li's Breadcrumb Area End Here -->
+<!-- Begin Login Content Area -->
+<div class="page-section mb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-3 mb-30"></div>
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-6 mb-30">
+                <!-- Login Form s-->
+                @using (Html.BeginForm("Register", "Home",FormMethod.Post))
+                {
+                    <div class="login-form">
+                        <h4 class="login-title">Register</h4>
+                        <div class="row">
+                            <div class="col-md-6 col-12 mb-20">
+                                <label>UserName*</label>
+                                <input name="username" class="mb-0" type="text" placeholder="UserName..." required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">
+                            </div>
+                            <div class="col-md-6 col-12 mb-20">
+                                <label>FullName*</label>
+                                <input name="name" class="mb-0" type="text" placeholder="FullName..." required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">
+                            </div>
+                            <div class="col-md-12 mb-20">
+                                <label>Phone Number*</label>
+                                <input name="phonenumber" class="mb-0" type="text" placeholder="Email Address" required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">
+                            </div>
+                            <div class="col-md-6 mb-20">
+                                <label>Password</label>
+                                <input id="newPassword" name="password" class="mb-0" type="password" placeholder="Password">
+                            </div>
+                            <div class="col-md-6 mb-20">
+                                <label>Confirm Password</label>
+                                <input id="confirmPassword" class="mb-0" type="password" placeholder="Confirm Password">
+                            </div>
+                            <div class="col-md-6 mb-20 registrationFormAlert"  id="CheckPasswordMatch">
+                            </div>
+                            <div class="col-12">
+                                <button id="btnRegister" class="register-button mt-0">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+                </div>
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-3 mb-30"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        function checkPasswordMatch() {
+            var password = $("#newPassword").val();
+            var confirmPassword = $("#confirmPassword").val();
+            if (password != confirmPassword) {
+                $("#CheckPasswordMatch").html('<span style="color:red">Passwords does not match!</span>');
+                $("#btnRegister").prop('disabled', true);
+            }
+            else {
+                $("#CheckPasswordMatch").html('<span style="color: green">Passwords match.</span>');
+                $("#btnRegister").prop('disabled', false);
+            }
+        }
+
+        $("#confirmPassword").keyup(checkPasswordMatch);
+
+
+    </script>
+
+
+
+}
+

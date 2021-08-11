@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewBag.Title = "NhaSanXuat";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Danh sách nhà sản xuất</h2>
+<a class="btn btn-primary" href="@Url.Action("AddSupplier","NhaSanXuat")">Thêm mới</a>
+<br /><br />
+<div id="thongbao">
+</div>
+<table class="table" style="margin:10px auto">
+    <thead>
+        <tr>
+            <th>Mã NSX</th>
+            <th>Tên NSX</th>
+            <th>Địa chỉ</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+
+    </tfoot>
+
+</table>
+
+@section scripts{
+    <script type="text/javascript">
+        //$(document).ready(function () { LoadSupplier();});
+        var suppliers = [];
+        function LoadSupplier() {
+            $.getJSON('/api/NhaSanXuatAPI', function (data) {
+                console.log(data);
+                suppliers = data;
+                var html = '';
+                $(data).each(function (k, v) {
+                    html += '<tr><td>' + v.MaNSX + '</td><td>' + v.TenNSX + '</td><td>' + v.Diachi + '</td><td>' + v.SDT + '</td><td>' + v.Email + '</td><td><a class="btn btn-success" href="#" onclick="return EditSupplier(\'' + v.MaNSX + '\',this)">Sửa</a> <a class="btn btn-danger" href="#" onclick="return Delete(\'' + v.MaNSX + '\',this);">Xóa</a></td></tr>';
+                })
+                $('table tbody').html(html);
+                $('table').dataTable({
+                    dom: 'Bfrtip',
+                    "pageLength": 5,
+                    "bRetrieve": true,
+                    "bDestroy": true,
+                });
+            });
+        }
+        LoadSupplier();
+
+        function EditSupplier(id, ctl) {
+            if ($(ctl).text() == 'Sửa') {
+                $(ctl).text('Lưu');
+
+                for (var i = 0; i < 4; i++) {
+                    var val = $(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').text();
+
+                    $(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').html('<input type="text") value="' + val + '" />');
+                }
+            } else {
+                var elem = $(ctl).parent().parent();
+
+                data = { MaNSX: id, TenNSX: $(elem).children('td:nth-child(2)').children().val(), Diachi: $(elem).children('td:nth-child(3)').children().val(), SDT: $(elem).children('td:nth-child(4)').children().val(), Email: $(elem).children('td:nth-child(5)').children().val() }
+                console.log(data);
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/NhaSanXuatAPI/Edit',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (result) {
+                        console.log(result);
+                        thongbao(result, true);
+                        console.log("success");
+                    },
+                }).done(function () {
+                    console.log('Edit done');
+                }).fail(function (msg) {
+                    thongbao('Edit Fail', false);
+                    console.log('Edit FAIL');
+                });
+
+                for (var i = 0; i < 4; i++) {
+                    $(elem).children('td:nth-child(' + (2 + i) + ')').text($(ctl).parent().parent().children('td:nth-child(' + (2 + i) + ')').children('input').val());
+                }
+                $(ctl).text('Sửa');
+            }
+        }
+
+        function Delete(id, ctl) {
+            var result = confirm("Bạn chắc chắn muốn xóa nhà cung cấp này?");
+            if (result) {
+                $.ajax({
+                    url: '/api/NhaSanXuatAPI/Delete?id=' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        $(ctl).parent().parent().remove();
+                        thongbao(result, true);
+                    }
+                }).fail(function (data) {
+                    alert('Delete product fail');
+                });
+            }
+            return false;
+        }
+
+        function thongbao(txt, status) {
+            $('#thongbao').hide();
+            if (status == true) {
+                $('#thongbao').html('<div class="alert alert-success">' + txt + '</div>');
+            } else {
+                $('#thongbao').html('<div class="alert alert-danger">' + txt + '</div>');
+            }
+            $('#thongbao').fadeIn();
+            setTimeout(function () { $('#thongbao div').fadeOut("slow"); }, 3000);
+        }
+
+    </script>
+
+}
+

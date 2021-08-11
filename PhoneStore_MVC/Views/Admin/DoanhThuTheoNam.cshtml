@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewBag.Title = "DoanhThuTheoNam";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/Content/yearpicker.css" rel="stylesheet" />
+<!-- Content Wrapper. Contains page content -->
+    <!-- Content Header (Page header) -->
+    <!--<section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>ChartJS</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">ChartJS</li>
+                    </ol>
+                </div>
+            </div>
+        </div>--><!-- /.container-fluid -->
+    <!--</section>-->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- AREA CHART -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Doanh thu năm </h3>
+                            <input type="text" style="height:20px; border:none; margin-left:15px;" class="yearpicker" id="yp_doanhthu" value="">
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="chart_doanhthu" class="charts" style="width: 100%; height: 400px">
+                                <canvas id="chart_dt"></canvas>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- LINE CHART -->
+                    <!--<div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Line Chart</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart">
+                                <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                            </div>
+                        </div>-->
+                        <!-- /.card-body -->
+                    <!--</div>-->
+                    <!-- /.card -->
+                    <!-- PIE CHART -->
+                    <!--<div class="card card-danger">
+                        <div class="card-header">
+                            <h3 class="card-title">Pie Chart</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="ThongKeTheoHang" style="min-height: 400px; height: 400px; max-height: 400px; max-width: 100%;"></canvas>
+                        </div>-->
+                        <!-- /.card-body -->
+                    <!--</div>-->
+                    <!-- /.card -->
+
+                </div>
+                <!-- /.col (LEFT) -->
+                <div class="col-md-6">
+                    <!-- /.card -->
+                    <!-- DONUT CHART -->
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h3 class="card-title">Thống kê sản phẩm bán được theo năm</h3>
+                            <input type="text" style="height:20px; border:none; margin-left:10px;" class="yearpicker" id="yp_thongke" value="">
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="chart_thongketheohang" class="charts" style="width: 100%; height: 400px">
+                                <canvas id="chart_tkth"></canvas>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                    
+                    <!-- BAR CHART -->
+                    <!--<div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">Bar Chart</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart">
+                                <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                            </div>
+                        </div>-->
+                        <!-- /.card-body -->
+                    <!--</div>-->
+                    <!-- /.card -->
+                    <!-- STACKED BAR CHART -->
+                    <!--<div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">Stacked Bar Chart</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart">
+                                <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                            </div>
+                        </div>-->
+                        <!-- /.card-body -->
+                    <!--</div>-->
+                    <!-- /.card -->
+
+                </div>
+                <!-- /.col (RIGHT) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+<!-- /.content-wrapper -->
+
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="~/Scripts/yearpicker.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#yp_doanhthu').yearpicker({
+                // Initial Year
+                year: new Date().getFullYear(),
+                // Start Year
+                startYear: 2000,
+                // End Year
+                endYear: new Date().getFullYear(),
+                // Element tag
+                itemTag: 'li',
+                // Default CSS classes
+                selectedClass: 'selected',
+                disabledClass: 'disabled',
+                hideClass: 'hide',
+
+                // Custom template
+                template: `<div class="yearpicker-container">
+                          <div class="yearpicker-header">
+                              <div class="yearpicker-prev" data-view="yearpicker-prev">&lsaquo;</div>
+                              <div class="yearpicker-current" data-view="yearpicker-current">SelectedYear</div>
+                              <div class="yearpicker-next" data-view="yearpicker-next">&rsaquo;</div>
+                          </div>
+                          <div class="yearpicker-body">
+                              <ul class="yearpicker-year" data-view="years">
+                              </ul>
+                          </div>
+                      </div>`,
+                onShow: null,
+                onHide: null,
+                onChange: function (value) {
+                    DoanhThuTheoNam(value);
+                }
+            });
+
+
+            $('#yp_thongke').yearpicker({
+                // Initial Year
+                year: new Date().getFullYear(),
+                // Start Year
+                startYear: 2000,
+                // End Year
+                endYear: new Date().getFullYear(),
+                // Element tag
+                itemTag: 'li',
+                // Default CSS classes
+                selectedClass: 'selected',
+                disabledClass: 'disabled',
+                hideClass: 'hide',
+
+                // Custom template
+                template: `<div class="yearpicker-container">
+                          <div class="yearpicker-header">
+                              <div class="yearpicker-prev" data-view="yearpicker-prev">&lsaquo;</div>
+                              <div class="yearpicker-current" data-view="yearpicker-current">SelectedYear</div>
+                              <div class="yearpicker-next" data-view="yearpicker-next">&rsaquo;</div>
+                          </div>
+                          <div class="yearpicker-body">
+                              <ul class="yearpicker-year" data-view="years">
+                              </ul>
+                          </div>
+                      </div>`,
+                onShow: null,
+                onHide: null,
+                onChange: function (value) {
+                    ThongKeTheoHang(value);
+                }
+            });
+
+            var thang = [];
+            var dulieu = [];
+            function DoanhThuTheoNam(nam) {
+                $.get('/api/ThongKeAPI/DoanhThuTheoNam?nam=' + nam, function (data) {
+                    thang = [];
+                    dulieu = [];
+                    console.log(data);
+                    for (var i in data) {
+                        thang.push(data[i].ThongTin);
+                        dulieu.push(data[i].DuLieu);
+                    }
+                    console.log('Thang: '+thang);
+                    console.log('Du lieu: '+dulieu);
+                    Ve('chart_doanhthu','chart_dt','bar',dulieu,thang);
+                });
+            }
+
+            var tennsx = [];
+            var soluong = [];
+            function ThongKeTheoHang(nam) {
+                $.get('/api/ThongKeTheoHang?nam=' + nam, function (data) {
+                    tennsx = [];
+                    soluong = [];
+                    console.log(data);
+                    for (var i in data) {
+                        tennsx.push(data[i].TenNSX);
+                        soluong.push(data[i].SoLuong);
+                    }
+                    console.log('TenNSX: ' + tennsx);
+                    console.log('So luong: ' + soluong);
+                    Ve('chart_thongketheohang', 'chart_tkth', 'doughnut', soluong, tennsx);
+                });
+            }
+
+            function Ve(div,canvas,type,data,label) {
+                $('#' + div).html('');
+                $('#' + div).html('<canvas id="'+canvas+'"></canvas>');
+                var ctx = document.getElementById(canvas).getContext("2d");
+                var myChart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: label,
+                        datasets: [
+                            {
+                                label: "Doanh thu nhập",
+                                data: data,
+                                backgroundColor: [
+                                    "rgba(224, 86, 253,0.5)",
+                                    "rgba(54, 162, 235, 0.5)",
+                                    "rgba(255, 206, 86, 0.5)",
+                                    "rgba(75, 192, 192, 0.5)",
+                                    "rgba(153, 102, 255, 0.5)",
+                                    "rgba(255, 159, 64, 0.5)",
+                                    "rgba(246, 229, 141,0.5)",
+                                    "rgba(240, 147, 43, 0.5)",
+                                    "rgba(255, 121, 121,0.5)",
+                                    "rgba(186, 220, 88,0.5)",
+                                    "rgba(104, 109, 224,0.5)",
+                                    "rgba(72, 52, 212,0.5)",
+                                ],
+                                borderColor: [
+                                    "rgba(224, 86, 253,1)",
+                                    "rgba(54, 162, 235, 1)",
+                                    "rgba(255, 206, 86, 1)",
+                                    "rgba(75, 192, 192, 1)",
+                                    "rgba(153, 102, 255, 1)",
+                                    "rgba(255, 159, 64, 1)",
+                                    "rgba(246, 229, 141,1)",
+                                    "rgba(240, 147, 43, 1)",
+                                    "rgba(255, 121, 121,1)",
+                                    "rgba(186, 220, 88,1)",
+                                    "rgba(104, 109, 224,1)",
+                                    "rgba(72, 52, 212,1)",
+                                ],
+                                borderWidth: 1,
+                            }
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        //padding layout canvas
+                        layout: {
+                            padding: {
+                                left: 20,
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                            },
+                        },
+                        legend: {
+                            labels: {
+                                fontColor: "black",
+                                fontSize: 18,
+                            },
+                        },
+                        maintainAspectRatio: false,
+                    },
+                });
+            }
+        });
+    </script>
+
+}

@@ -1,0 +1,95 @@
+﻿@model PhoneStore_MVC.Models.tNhaSanXuat
+
+@{
+    ViewBag.Title = "AddSupplier";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div id="thongbao">
+
+</div>
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h2>Thêm nhà sản xuất</h2>
+
+        <input type="text" id="txtMaNSX" placeholder="Mã nhà sản xuất" class="form-control" />
+        <br />
+
+        <input type="text" id="txtTenNSX" placeholder="Tên nhà sản xuất" class="form-control" />
+        <br />
+        <input type="text" id="txtDiaChi" placeholder="Địa chỉ" class="form-control" />
+        <br />
+        <input type="text" id="txtSDT" placeholder="Số điện thoại" class="form-control" />
+        <br />
+        <input type="email" id="txtEmail" placeholder="Email" class="form-control" />
+        <br />
+        <a href="#" class="btn btn-success" id="btnInsert">Thêm</a>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        function thongbao(txt, status) {
+            $('#thongbao').hide();
+            if (status == true) {
+                $('#thongbao').html('<div class="alert alert-success">' + txt + '</div>');
+            } else {
+                $('#thongbao').html('<div class="alert alert-danger">' + txt + '</div>');
+            }
+            $('#thongbao').fadeIn();
+            setTimeout(function () { $('#thongbao div').fadeOut("slow"); }, 3000);
+        }
+        function ClearData() {
+            $('#txtMaNSX').val("");
+            $('#txtTenNSX').val("");
+            $('#txtDiaChi').val("");
+            $('#txtGiaBan').val("");
+            $('#txtSDT').val("");
+            $('#txtEmail').val("");
+        }
+
+        $('#btnInsert').click(function (e) {
+            var mansx = $("#txtMaNSX").val();
+            var tennsx = $("#txtTenNSX").val();
+            var diachi = $("#txtDiaChi").val();
+            var sdt = $("#txtSDT").val();
+            var email = $('#txtEmail').val();
+
+
+            var data = { MaNSX: mansx, TenNSX: tennsx, Diachi: diachi, SDT: sdt, Email: email };
+            //console.log(data);
+
+            if ($('#txtMaNSX').val() && $('#txtTenNSX').val() && $('#txtDiaChi').val() && $('#txtSDT').val() && $('#txtEmail').val()) {
+                $.ajax({
+                    type: "POST",
+                    url: '/api/NhaSanXuatAPI/Add',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log(data);
+                        thongbao(data, true);
+                        console.log("add success");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(jQuery.parseJSON(xhr.responseText).Message);
+                    }
+                }).fail(function (message) {
+                    console.log('failed');
+                    thongbao('Lỗi khi thêm mới nhà sản xuất', false);
+                });
+                ClearData();
+            } else {
+                thongbao('add failed', false);
+            }
+        });
+
+    </script>
+}
+
+
