@@ -1,5 +1,4 @@
-﻿@model PhoneStore_MVC.Models.tNhanVien
-
+﻿@model PhoneStore_MVC.Models.DangKyViewModel
 @{
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_LayoutHome.cshtml";
@@ -24,32 +23,42 @@
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-3 mb-30"></div>
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-6 mb-30">
                 <!-- Login Form s-->
-                @using (Html.BeginForm("Register", "Home",FormMethod.Post))
+                @using (Html.BeginForm("Register", "Home", FormMethod.Post))
                 {
                     <div class="login-form">
                         <h4 class="login-title">Register</h4>
                         <div class="row">
                             <div class="col-md-6 col-12 mb-20">
                                 <label>UserName*</label>
-                                <input name="username" class="mb-0" type="text" placeholder="UserName..." required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">
+                                @*<input name="username" class="mb-0" type="text" placeholder="UserName..." required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">*@
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "mb-0", @placeholder = "UserName..." } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-6 col-12 mb-20">
                                 <label>FullName*</label>
-                                <input name="name" class="mb-0" type="text" placeholder="FullName..." required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">
+                                @*<input name="name" class="mb-0" type="text" placeholder="FullName..." required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">*@
+                                @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "mb-0", @placeholder = "FullName..." } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-12 mb-20">
                                 <label>Phone Number*</label>
-                                <input name="phonenumber" class="mb-0" type="text" placeholder="Email Address" required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">
+                                @*<input name="phonenumber" class="mb-0" type="text" placeholder="Email Address" required oninvalid="this.setCustomValidity('Enter Username Here')" oninput="this.setCustomValidity('')">*@
+                                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "mb-0", @placeholder = "PhoneNumber" } })
+                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-6 mb-20">
                                 <label>Password</label>
-                                <input id="newPassword" name="password" class="mb-0" type="password" placeholder="Password">
+                                @*<input id="newPassword" name="password" class="mb-0" type="password" placeholder="Password">*@
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "mb-0", @id = "newPassword", @placeholder = "Password" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-6 mb-20">
                                 <label>Confirm Password</label>
-                                <input id="confirmPassword" class="mb-0" type="password" placeholder="Confirm Password">
+                                @*<input id="confirmPassword" class="mb-0" type="password" placeholder="Confirm Password">*@
+                                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "mb-0", @id = "confirmPassword", @placeholder = "Confirm Password"} })
+                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
                             </div>
-                            <div class="col-md-6 mb-20 registrationFormAlert"  id="CheckPasswordMatch">
+                            <div class="col-md-6 mb-20 registrationFormAlert" id="CheckPasswordMatch">
                             </div>
                             <div class="col-12">
                                 <button id="btnRegister" class="register-button mt-0">Register</button>
@@ -57,7 +66,7 @@
                         </div>
                     </div>
                 }
-                </div>
+            </div>
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-3 mb-30"></div>
         </div>
     </div>
@@ -65,20 +74,20 @@
 
 @section scripts{
     <script type="text/javascript">
-        function checkPasswordMatch() {
-            var password = $("#newPassword").val();
-            var confirmPassword = $("#confirmPassword").val();
-            if (password != confirmPassword) {
-                $("#CheckPasswordMatch").html('<span style="color:red">Passwords does not match!</span>');
-                $("#btnRegister").prop('disabled', true);
-            }
-            else {
-                $("#CheckPasswordMatch").html('<span style="color: green">Passwords match.</span>');
-                $("#btnRegister").prop('disabled', false);
-            }
-        }
+        //function checkPasswordMatch() {
+        //    var password = $("#newPassword").val();
+        //    var confirmPassword = $("#confirmPassword").val();
+        //    if (password != confirmPassword) {
+        //        $("#CheckPasswordMatch").html('<span style="color:red">Passwords does not match!</span>');
+        //        $("#btnRegister").prop('disabled', true);
+        //    }
+        //    else {
+        //        $("#CheckPasswordMatch").html('<span style="color: green">Passwords match.</span>');
+        //        $("#btnRegister").prop('disabled', false);
+        //    }
+        //}
 
-        $("#confirmPassword").keyup(checkPasswordMatch);
+        //$("#confirmPassword").keyup(checkPasswordMatch);
 
 
     </script>

@@ -242,7 +242,7 @@
                                                                                     <option value="4">4</option>
                                                                                     <option value="5">5</option>
                                                                                 </select>*@
-                                                                            <input type="text" id="txtDanhGia"/>
+                                                                            <input type="text" id="txtDanhGia" />
                                                                         </span>
                                                                     </p>
                                                                     <p class="feedback-form">
@@ -526,9 +526,10 @@
                 $('#product_details tbody').html(thongso);
             });
         }
+
         LoadDuLieu();
 
-
+        //Đánh giá sản phẩm
         $('#btn_submit_review').click(function () {
             var id = '@ViewBag.MaDT';
             var danhgia = $('#txtDanhGia').val();
@@ -548,10 +549,6 @@
 
         });
 
-
-
-
-
         //Lấy thông tin giỏ hàng
         var Cart = [];
         if (sessionStorage.getItem('giohang') === null) {
@@ -560,25 +557,49 @@
             Cart = JSON.parse(sessionStorage.getItem('giohang'));
         }
 
+        //Ấn nút thêm vào giỏ hàng
         $('#btn_add_cart').click(function (e) {
             e.preventDefault();
+            var id = '@ViewBag.MaDT';
+            var phone = [];
+            $.ajax({
+                async: false,
+                url: '/api/SanPhamAPI/ChiTietSanPham?id=' + id,
+                success: function (data) {
+                    phone = data;
+                }
+            });
+
+            //kiểm tra số sp trong giỏ hàng
             var sp = 0;
             if (sessionStorage.getItem("sosp") !== null) {
                 sp = parseInt(sessionStorage.getItem("sosp"));
             }
+
+            var tensp = phone.TenDT;
+            var masp = phone.MaDT;
+            var productDetail = {};
+            $.ajax({
+                async: false,
+                url: '/api/SanPhamAPI/GetProductPrice?id=' + id + '&color=' + $('#product_color').val(),
+                success: function (data) {
+                    productDetail = data;
+                }
+            });
+            var mau = $('#product_color').val();
+            var gia = productDetail[0].DonGiaBan;
+            var anh = $('#product_first_img').text();
+
+            //kiểm tra số lượng mua và tồn kho
             var soluong = $(this).parent().children().children().children("input[type=text]").val();
-            var soluongconlai = $('#product_quantity').text();
+            var soluongconlai = productDetail.SoLuong;
             if (Number(soluong) > Number(soluongconlai)) {
                 alert('Not enough products instock');
                 return;
             }
-            var tensp = $(' #product_name').text();
-            var masp = $('#product_code').text();
-            var mau = $('#product_color').val();
-            var gia = $('#product_price').text();
-            var anh = $('#product_first_img').text();
+            
+            //console.log("ten:" + tensp + " ma: " + masp + " mau: " + mau + " gia: " + gia + " soluong: " + soluong + " anh: " + anh);
 
-            console.log("ten:" + tensp + " ma: " + masp + " mau: " + mau + " gia: " + gia + " soluong: " + soluong + " anh: " + anh);
             var i = 0;
             for (; i < Cart.length; i++) {
                 if (Cart[i].MaSP == masp && Cart[i].Mau == mau) {

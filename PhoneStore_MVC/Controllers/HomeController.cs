@@ -19,11 +19,17 @@ namespace PhoneStore_MVC.Controllers
 
             return View();
         }
+
+        public ActionResult RenderNavBottom()
+        {
+            var list = db.tNhaSanXuats;
+            return PartialView("NavBarBottom", list.ToList());
+        }
         public ActionResult TrangChu()
         {
             var dt = from a in db.tDienThoais.Where(x => x.tNhaSanXuat.TenNSX == "Apple" && x.TrangThai != "Ngừng kinh doanh").Select(a => new { a.MaDT, a.TenDT, a.BaoHanh, a.BoNhoTrong, a.Chip, a.HeDieuHanh, a.KichThuoc, a.Pin, a.Ram, a.tNhaSanXuat.TenNSX })
                      orderby a.MaDT
-                     select new tDienThoaiViewModel { MaDT = a.MaDT, TenDT = a.TenDT, BaoHanh = a.BaoHanh, BoNhoTrong = a.BoNhoTrong, Chip = a.Chip, HeDieuHanh = a.HeDieuHanh, KichThuoc = a.KichThuoc, Pin = a.Pin, Ram = a.Ram, MaNSX = a.TenNSX, Anh = db.tAnhs.Where(e => e.MaDT == a.MaDT).Select(e => e.Anh).ToList(), Gia = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.DonGiaBan).ToList(), Mau = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.Mau).ToList(), SoLuong = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.SoLuong).ToList()};
+                     select new tDienThoaiViewModel { MaDT = a.MaDT, TenDT = a.TenDT, BaoHanh = a.BaoHanh, BoNhoTrong = a.BoNhoTrong, Chip = a.Chip, HeDieuHanh = a.HeDieuHanh, KichThuoc = a.KichThuoc, Pin = a.Pin, Ram = a.Ram, MaNSX = a.TenNSX, Anh = db.tAnhs.Where(e => e.MaDT == a.MaDT).Select(e => e.Anh).ToList(), Gia = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.DonGiaBan).ToList(), Mau = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.Mau).ToList(), SoLuong = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.SoLuong).ToList() };
 
             var ss = from a in db.tDienThoais.Where(x => x.tNhaSanXuat.TenNSX == "Samsung" && x.TrangThai != "Ngừng kinh doanh").Select(a => new { a.MaDT, a.TenDT, a.BaoHanh, a.BoNhoTrong, a.Chip, a.HeDieuHanh, a.KichThuoc, a.Pin, a.Ram, a.tNhaSanXuat.TenNSX })
                      orderby a.MaDT
@@ -57,72 +63,17 @@ namespace PhoneStore_MVC.Controllers
 
         }
         [HttpGet]
-        public ActionResult Iphone(string sort, int? page)
+        public ActionResult GetProductByManufacture(string name, string sort, int? page)
         {
-            var dt = from a in db.tDienThoais.Where(x => x.tNhaSanXuat.TenNSX == "Apple" && x.TrangThai != "Ngừng kinh doanh").Select(a => new { a.MaDT, a.TenDT, a.BaoHanh, a.BoNhoTrong, a.Chip, a.HeDieuHanh, a.KichThuoc, a.Pin, a.Ram, a.tNhaSanXuat.TenNSX })
-                     join b in db.tAnhs.GroupBy(x => x.MaDT).Select(x => x.FirstOrDefault()) on a.MaDT equals b.MaDT
-                     orderby a.MaDT
-                     select new tDienThoaiViewModel { MaDT = a.MaDT, TenDT = a.TenDT, BaoHanh = a.BaoHanh, BoNhoTrong = a.BoNhoTrong, Chip = a.Chip, HeDieuHanh = a.HeDieuHanh, KichThuoc = a.KichThuoc, Pin = a.Pin, Ram = a.Ram, MaNSX = a.TenNSX, Anh = db.tAnhs.Where(e => e.MaDT == a.MaDT).Select(e => e.Anh).ToList(), Gia = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.DonGiaBan).ToList(), Mau = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.Mau).ToList(), SoLuong = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.SoLuong).ToList() };
-            if (!string.IsNullOrWhiteSpace(sort))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                switch (sort)
-                {
-                    case "name_desc":
-                        dt = dt.OrderByDescending(a => a.TenDT);
-                        break;
-                    case "name_asc":
-                        dt = dt.OrderBy(a => a.TenDT);
-                        break;
-                    case "price_desc":
-
-                        dt = dt.OrderByDescending(a => a.Gia.FirstOrDefault());
-                        break;
-                    case "price_asc":
-                        dt = dt.OrderBy(a => a.Gia.FirstOrDefault());
-                        break;
-                    default:
-                        break;
-                }
-
+                return HttpNotFound();
             }
-            return View(dt.ToPagedList(page ?? 1, 8));
-        }
-        public ActionResult Samsung(string sort, int? page)
-        {
-            var dt = from a in db.tDienThoais.Where(x => x.tNhaSanXuat.TenNSX == "Samsung" && x.TrangThai != "Ngừng kinh doanh").Select(a => new { a.MaDT, a.TenDT, a.BaoHanh, a.BoNhoTrong, a.Chip, a.HeDieuHanh, a.KichThuoc, a.Pin, a.Ram, a.tNhaSanXuat.TenNSX })
+            var dt = from a in db.tDienThoais.Where(x => x.tNhaSanXuat.TenNSX == name && x.TrangThai != "Ngừng kinh doanh").Select(a => new { a.MaDT, a.TenDT, a.BaoHanh, a.BoNhoTrong, a.Chip, a.HeDieuHanh, a.KichThuoc, a.Pin, a.Ram, a.tNhaSanXuat.TenNSX })
                      join b in db.tAnhs.GroupBy(x => x.MaDT).Select(x => x.FirstOrDefault()) on a.MaDT equals b.MaDT
                      orderby a.MaDT
                      select new tDienThoaiViewModel { MaDT = a.MaDT, TenDT = a.TenDT, BaoHanh = a.BaoHanh, BoNhoTrong = a.BoNhoTrong, Chip = a.Chip, HeDieuHanh = a.HeDieuHanh, KichThuoc = a.KichThuoc, Pin = a.Pin, Ram = a.Ram, MaNSX = a.TenNSX, Anh = db.tAnhs.Where(e => e.MaDT == a.MaDT).Select(e => e.Anh).ToList(), Gia = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.DonGiaBan).ToList(), Mau = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.Mau).ToList(), SoLuong = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.SoLuong).ToList() };
-            if (!string.IsNullOrWhiteSpace(sort))
-            {
-                switch (sort)
-                {
-                    case "name_desc":
-                        dt = dt.OrderByDescending(a => a.TenDT);
-                        break;
-                    case "name_asc":
-                        dt = dt.OrderBy(a => a.TenDT);
-                        break;
-                    case "price_desc":
-
-                        dt = dt.OrderByDescending(a => a.Gia.FirstOrDefault());
-                        break;
-                    case "price_asc":
-                        dt = dt.OrderBy(a => a.Gia.FirstOrDefault());
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-            return View(dt.ToPagedList(page ?? 1, 8));
-        }
-        public ActionResult Xiaomi(string sort, int? page)
-        {
-            var dt = from a in db.tDienThoais.Where(x => x.tNhaSanXuat.TenNSX == "Xiaomi" && x.TrangThai != "Ngừng kinh doanh").Select(a => new { a.MaDT, a.TenDT, a.BaoHanh, a.BoNhoTrong, a.Chip, a.HeDieuHanh, a.KichThuoc, a.Pin, a.Ram, a.tNhaSanXuat.TenNSX })
-                     join b in db.tAnhs.GroupBy(x => x.MaDT).Select(x => x.FirstOrDefault()) on a.MaDT equals b.MaDT
-                     orderby a.MaDT
-                     select new tDienThoaiViewModel { MaDT = a.MaDT, TenDT = a.TenDT, BaoHanh = a.BaoHanh, BoNhoTrong = a.BoNhoTrong, Chip = a.Chip, HeDieuHanh = a.HeDieuHanh, KichThuoc = a.KichThuoc, Pin = a.Pin, Ram = a.Ram, MaNSX = a.TenNSX, Anh = db.tAnhs.Where(e => e.MaDT == a.MaDT).Select(e => e.Anh).ToList(), Gia = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.DonGiaBan).ToList(), Mau = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.Mau).ToList(), SoLuong = db.tSoLuongs.Where(e => e.MaDT == a.MaDT).Select(e => e.SoLuong).ToList() };
+            if (dt == null) return HttpNotFound();
             if (!string.IsNullOrWhiteSpace(sort))
             {
                 switch (sort)
@@ -207,7 +158,7 @@ namespace PhoneStore_MVC.Controllers
                     cookie.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Add(cookie);
                 }
-                    //CreateRememberCookie(khachang.TenDangNhap);
+                //CreateRememberCookie(khachang.TenDangNhap);
                 return Json(new { code = "success" });
             }
             else
@@ -245,18 +196,20 @@ namespace PhoneStore_MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(string username, string password, string name, string phonenumber)
+        //public ActionResult Register(string username, string password, string name, string phonenumber)
+        public ActionResult Register(DangKyViewModel model)
         {
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(username))
+            if (ModelState.IsValid)
             {
-                tKhachHang kh = new tKhachHang()
+
+                tKhachHang khach = new tKhachHang()
                 {
-                    TenDangNhap = username,
-                    MatKhau = CryptPassword.MD5Hash(password),
-                    TenKhach = name,
-                    DienThoai = phonenumber
+                    TenDangNhap = model.UserName,
+                    MatKhau = CryptPassword.MD5Hash(model.Password),
+                    TenKhach = model.FullName,
+                    DienThoai = model.PhoneNumber
                 };
-                db.tKhachHangs.Add(kh);
+                db.tKhachHangs.Add(khach);
                 db.SaveChanges();
                 return RedirectToAction("Login", "Home");
             }

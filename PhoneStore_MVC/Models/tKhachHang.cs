@@ -26,6 +26,7 @@ namespace PhoneStore_MVC.Models
         public string TenKhach { get; set; }
 
         [StringLength(11)]
+        [DataType(DataType.PhoneNumber)]
         public string DienThoai { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

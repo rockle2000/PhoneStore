@@ -509,17 +509,20 @@
     <Content Include="Views\Admin\DanhSachSanPham.cshtml" />
     <Content Include="Views\Admin\ThemSanPham.cshtml" />
     <Content Include="Views\Admin\DoanhThuTheoNam.cshtml" />
-    <Content Include="Views\Home\Iphone.cshtml" />
+    <Content Include="Views\Home\GetProductByManufacture.cshtml" />
     <Content Include="Views\Home\Samsung.cshtml" />
     <Content Include="Views\Home\Xiaomi.cshtml" />
     <Content Include="Views\Home\TimKiem.cshtml" />
     <Content Include="Views\Admin\TrangChu.cshtml" />
     <Content Include="Views\Home\ChangePassword.cshtml" />
     <Content Include="Views\Admin\DoiMatKhauAdmin.cshtml" />
+    <Content Include="Views\Shared\NavBarBottom.cshtml" />
+    <Content Include="Views\Home\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\HomePage\images\wishlist-thumb\" />
+    <Folder Include="Views\Default\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
