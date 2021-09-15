@@ -194,6 +194,7 @@
     <Compile Include="Models\tHoaDonBan.cs" />
     <Compile Include="Models\tHoaDonNhap.cs" />
     <Compile Include="Models\ThongKe.cs" />
+    <Compile Include="Models\ThongKeHang.cs" />
     <Compile Include="Models\tKhachHang.cs" />
     <Compile Include="Models\tMaKhuyenMai.cs" />
     <Compile Include="Models\tNhanVien.cs" />

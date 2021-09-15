@@ -43,6 +43,19 @@ namespace PhoneStore_MVC.Controllers
         //}
 
         [HttpGet]
+        [Route("api/ThongKeTheoHang")]
+        public IHttpActionResult ThongKeTheoHang(int nam)
+        {
+            var year = new SqlParameter("@year", nam);
+            List<ThongKeHang> list = db.Database.SqlQuery<ThongKeHang>("EXEC ThongKeTheoHang @year", year).ToList();
+            //foreach (var item in list)
+            //{
+
+            //}
+            return Ok(list);
+        }
+
+        [HttpGet]
         public IHttpActionResult DoanhThuTheoNam(int nam)
         {
             var year = new SqlParameter("@year", nam);
